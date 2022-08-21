@@ -43,7 +43,7 @@
 
   "custom": {
     "cardinal-components": [
-      "${modId}:air_hops"
+      "${modId}:trident_slot"
     ]
   }
 }
