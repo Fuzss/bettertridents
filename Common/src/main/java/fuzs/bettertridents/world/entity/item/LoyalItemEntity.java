@@ -9,7 +9,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class LoyalItemEntity extends ItemEntity {
-    private static final EntityDataAccessor<Byte> ID_LOYALTY = SynchedEntityData.defineId(ThrownTrident.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Byte> ID_LOYALTY = SynchedEntityData.defineId(LoyalItemEntity.class, EntityDataSerializers.BYTE);
 
     public LoyalItemEntity(EntityType<? extends ItemEntity> entityType, Level level) {
         super(entityType, level);
@@ -30,6 +29,7 @@ public class LoyalItemEntity extends ItemEntity {
 //        this.age = itemEntity.age;
 //        this.bobOffs = itemEntity.bobOffs;
         this.setOwner(owner);
+        if (loyaltyLevel < 1) throw new IllegalStateException("Loyalty level missing from loyal item entity, was %s".formatted(loyaltyLevel));
         this.entityData.set(ID_LOYALTY, (byte) loyaltyLevel);
     }
 
@@ -49,7 +49,6 @@ public class LoyalItemEntity extends ItemEntity {
                 this.zo = this.getZ();
 
                 int loyaltyLevel = this.entityData.get(ID_LOYALTY);
-                if (loyaltyLevel < 1) throw new IllegalStateException("Loyalty level missing from loyal item entity, was %s".formatted(loyaltyLevel));
                 this.noPhysics = true;
                 Vec3 vec3 = owner.getEyePosition().subtract(this.position());
                 this.setPosRaw(this.getX(), this.getY() + vec3.y * 0.015 * loyaltyLevel, this.getZ());

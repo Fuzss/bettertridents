@@ -1,8 +1,10 @@
 package fuzs.bettertridents;
 
-import fuzs.bettertridents.init.ForgeModRegistry;
+import fuzs.bettertridents.capability.TridentSlotCapability;
+import fuzs.bettertridents.init.ModRegistry;
 import fuzs.bettertridents.mixin.accessor.ThrownTridentAccessor;
 import fuzs.bettertridents.world.entity.item.LoyalItemEntity;
+import fuzs.puzzleslib.capability.ForgeCapabilityController;
 import fuzs.puzzleslib.core.CoreServices;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -11,6 +13,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,8 +27,12 @@ public class BetterTridentsForge {
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
         CoreServices.FACTORIES.modConstructor(BetterTridents.MOD_ID).accept(new BetterTridents());
-        ForgeModRegistry.touch();
+        registerCapabilities();
         registerHandlers();
+    }
+
+    private static void registerCapabilities() {
+        ForgeCapabilityController.setCapabilityToken(ModRegistry.TRIDENT_SLOT_CAPABILITY, new CapabilityToken<TridentSlotCapability>() {});
     }
 
     private static void registerHandlers() {

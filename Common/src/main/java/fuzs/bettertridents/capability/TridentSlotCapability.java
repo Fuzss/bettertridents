@@ -1,6 +1,7 @@
 package fuzs.bettertridents.capability;
 
 import fuzs.puzzleslib.capability.data.CapabilityComponent;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +14,12 @@ public interface TridentSlotCapability extends CapabilityComponent {
 
     default boolean addItemToInventory(Player player, ItemStack stack) {
         int slot = this.findSlotAtIndex(player.getInventory(), this.getSlot());
+        if (slot == 40) {
+            player.setItemSlot(EquipmentSlot.OFFHAND, stack);
+            // just some stuff Inventory::add also does (stack wasn't copied, so it's still the same)
+            stack.setPopTime(5);
+            return true;
+        }
         return player.getInventory().add(slot, stack);
     }
 
