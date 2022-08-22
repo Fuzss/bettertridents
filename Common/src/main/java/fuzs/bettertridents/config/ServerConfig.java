@@ -12,4 +12,6 @@ public class ServerConfig implements ConfigCore {
     public boolean returnTridentFromVoid = true;
     @Config(description = "Tridents will be picked up in the slot they were thrown from.")
     public boolean returnTridentToSlot = true;
+    @Config(description = "Elder guardians will always drop one trident fragment, you need three to craft yourself a new trident. How convenient!")
+    public boolean tridentFragmentDrop = true;
 }

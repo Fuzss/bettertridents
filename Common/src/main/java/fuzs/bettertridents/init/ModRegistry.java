@@ -12,9 +12,12 @@ import fuzs.puzzleslib.init.RegistryReference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 
 public class ModRegistry {
     private static final RegistryManager REGISTRY = CoreServices.FACTORIES.registration(BetterTridents.MOD_ID);
+    public static final RegistryReference<Item> TRIDENT_FRAGMENT_ITEM  = REGISTRY.registerItem("trident_fragment", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
     public static final RegistryReference<EntityType<LoyalItemEntity>> LOYAL_ITEM_ENTITY_TYPE = REGISTRY.registerEntityTypeBuilder("loyal_item", () -> EntityType.Builder.<LoyalItemEntity>of(LoyalItemEntity::new, MobCategory.MISC).sized(0.25F, 0.25F).clientTrackingRange(6).updateInterval(20));
 
     private static final CapabilityController CAPABILITIES = CoreServices.FACTORIES.capabilities(BetterTridents.MOD_ID);
