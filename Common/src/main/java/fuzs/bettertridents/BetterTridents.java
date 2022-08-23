@@ -1,5 +1,6 @@
 package fuzs.bettertridents;
 
+import fuzs.bettertridents.config.CommonConfig;
 import fuzs.bettertridents.config.ServerConfig;
 import fuzs.bettertridents.init.ModRegistry;
 import fuzs.puzzleslib.config.ConfigHolder;
@@ -14,7 +15,9 @@ public class BetterTridents implements ModConstructor {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
     @SuppressWarnings("Convert2MethodRef")
-    public static final ConfigHolder CONFIG = CoreServices.FACTORIES.serverConfig(ServerConfig.class, () -> new ServerConfig());
+    public static final ConfigHolder CONFIG = CoreServices.FACTORIES
+            .serverConfig(ServerConfig.class, () -> new ServerConfig())
+            .commonConfig(CommonConfig.class, () -> new CommonConfig());
 
     @Override
     public void onConstructMod() {

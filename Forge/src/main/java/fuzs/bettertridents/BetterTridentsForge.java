@@ -65,7 +65,13 @@ public class BetterTridentsForge {
         });
         TridentShardHandler tridentShardHandler = new TridentShardHandler();
         MinecraftForge.EVENT_BUS.addListener((final LootTableLoadEvent evt) -> {
-            tridentShardHandler.onLootTableLoad(evt.getLootTableManager(), evt.getName(), evt.getTable()::addPool);
+            tridentShardHandler.onLootTableReplacement(evt.getLootTableManager(), evt.getName(), evt.getTable(), evt::setTable);
+            tridentShardHandler.onLootTableModification(evt.getLootTableManager(), evt.getName(), evt.getTable()::addPool, index -> {
+                if (index == 0 && evt.getTable().removePool("main") != null) {
+                    return true;
+                }
+                return evt.getTable().removePool("pool" + index) != null;
+            });
         });
     }
 
