@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "bettertridents:trident_fragment"
+    },
+    "P": {
+      "tag": "forge:dusts/prismarine"
+    }
+  },
+  "pattern": [
+    " ##",
+    " P#",
+    "P  "
+  ],
+  "result": {
+    "item": "minecraft:trident"
+  }
+}

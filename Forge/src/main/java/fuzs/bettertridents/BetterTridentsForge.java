@@ -4,7 +4,6 @@ import fuzs.bettertridents.capability.TridentSlotCapability;
 import fuzs.bettertridents.data.ModItemModelProvider;
 import fuzs.bettertridents.data.ModLanguageProvider;
 import fuzs.bettertridents.data.ModRecipeProvider;
-import fuzs.bettertridents.handler.TridentShardHandler;
 import fuzs.bettertridents.init.ModRegistry;
 import fuzs.bettertridents.mixin.accessor.ThrownTridentAccessor;
 import fuzs.bettertridents.world.entity.item.LoyalItemEntity;
@@ -21,7 +20,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -63,23 +61,13 @@ public class BetterTridentsForge {
                 }
             }
         });
-        TridentShardHandler tridentShardHandler = new TridentShardHandler();
-        MinecraftForge.EVENT_BUS.addListener((final LootTableLoadEvent evt) -> {
-            tridentShardHandler.onLootTableReplacement(evt.getLootTableManager(), evt.getName(), evt.getTable(), evt::setTable);
-            tridentShardHandler.onLootTableModification(evt.getLootTableManager(), evt.getName(), evt.getTable()::addPool, index -> {
-                if (index == 0 && evt.getTable().removePool("main") != null) {
-                    return true;
-                }
-                return evt.getTable().removePool("pool" + index) != null;
-            });
-        });
     }
 
     @SubscribeEvent
     public static void onGatherData(final GatherDataEvent evt) {
         DataGenerator generator = evt.getGenerator();
         final ExistingFileHelper existingFileHelper = evt.getExistingFileHelper();
-        generator.addProvider(true, new ModRecipeProvider(generator));
+        generator.addProvider(true, new ModRecipeProvider(generator, BetterTridents.MOD_ID));
         generator.addProvider(true, new ModLanguageProvider(generator, BetterTridents.MOD_ID));
         generator.addProvider(true, new ModItemModelProvider(generator, BetterTridents.MOD_ID, existingFileHelper));
     }
