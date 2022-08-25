@@ -84,8 +84,8 @@ processResources {
     }
     // Forge's data gen doesn't work with assets placed in the common project, so we place them in Forge and include them here
     from(project(":Forge").sourceSets.main.resources) {
-        include("assets/*")
-        include("data/*")
+        include("assets/")
+        include("data/")
     }
 
     duplicatesStrategy DuplicatesStrategy.INCLUDE
@@ -138,8 +138,6 @@ processResources {
         )
     }
 }
-
-//sourceSets.main.resources.srcDir project(":Forge").file('src/generated/resources')
 
 compileJava {
     source project(":Common").sourceSets.main.allSource

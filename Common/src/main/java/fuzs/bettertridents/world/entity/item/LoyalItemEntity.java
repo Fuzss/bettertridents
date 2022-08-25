@@ -1,17 +1,15 @@
 package fuzs.bettertridents.world.entity.item;
 
+import fuzs.bettertridents.handler.LoyalDropsHandler;
 import fuzs.bettertridents.init.ModRegistry;
+import fuzs.bettertridents.mixin.accessor.ItemEntityAccessor;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -26,8 +24,8 @@ public class LoyalItemEntity extends ItemEntity {
         super(ModRegistry.LOYAL_ITEM_ENTITY_TYPE.get(), itemEntity.level);
         this.setItem(itemEntity.getItem().copy());
         this.copyPosition(itemEntity);
-//        this.age = itemEntity.age;
-//        this.bobOffs = itemEntity.bobOffs;
+        ((ItemEntityAccessor) this).setAge(itemEntity.getAge());
+        ((ItemEntityAccessor) this).setBobOffs(itemEntity.bobOffs);
         this.setOwner(owner);
         if (loyaltyLevel < 1) throw new IllegalStateException("Loyalty level missing from loyal item entity, was %s".formatted(loyaltyLevel));
         this.entityData.set(ID_LOYALTY, (byte) loyaltyLevel);
@@ -41,30 +39,18 @@ public class LoyalItemEntity extends ItemEntity {
 
     @Override
     public void tick() {
+        // just let super handle discarding an empty item
         if (!this.getItem().isEmpty()) {
-            Player owner = this.isAcceptableReturnOwner();
+            Player owner = LoyalDropsHandler.isAcceptableReturnOwner(this.level, this.getOwner());
             if (owner != null) {
-                this.xo = this.getX();
-                this.yo = this.getY();
-                this.zo = this.getZ();
+                LoyalDropsHandler.tickLoyalEntity(this, owner, this.entityData.get(ID_LOYALTY));
 
-                int loyaltyLevel = this.entityData.get(ID_LOYALTY);
-                this.noPhysics = true;
-                Vec3 vec3 = owner.getEyePosition().subtract(this.position());
-                this.setPosRaw(this.getX(), this.getY() + vec3.y * 0.015 * loyaltyLevel, this.getZ());
-                if (this.level.isClientSide) {
-                    this.yOld = this.getY();
+                // allow this to age, just in case something is wrong, so we don't stay in the world forever
+                if (this.getAge() != -32768) {
+                    ((ItemEntityAccessor) this).setAge(this.getAge() + 1);
                 }
-                this.setDeltaMovement(this.getDeltaMovement().scale(0.95).add(vec3.normalize().scale(0.05 * loyaltyLevel)));
-
-                this.baseTick();
-                if (!this.onGround || this.getDeltaMovement().horizontalDistanceSqr() > 1.0E-5F || (this.tickCount + this.getId()) % 4 == 0) {
-                    this.move(MoverType.SELF, this.getDeltaMovement());
-                }
-                if (!this.level.isClientSide) {
-                    if (this.getDeltaMovement().subtract(vec3).lengthSqr() > 0.01) {
-                        this.hasImpulse = true;
-                    }
+                if (!this.level.isClientSide && this.getAge() >= 6000) {
+                    this.discard();
                 }
             } else {
                 super.tick();
@@ -72,18 +58,5 @@ public class LoyalItemEntity extends ItemEntity {
         } else {
             super.tick();
         }
-    }
-
-    @Nullable
-    private Player isAcceptableReturnOwner() {
-        if (this.getOwner() != null) {
-            Player player = this.level.getPlayerByUUID(this.getOwner());
-            if (player == null || !player.isAlive()) {
-                return null;
-            } else {
-                return !(player instanceof ServerPlayer) || !player.isSpectator() ? player : null;
-            }
-        }
-        return null;
     }
 }

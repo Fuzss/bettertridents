@@ -5,6 +5,8 @@
   "package": "fuzs.bettertridents.mixin",
   "refmap": "bettertridents.refmap.json",
   "mixins": [
+    "EntityMixin",
+    "FabricLivingEntityMixin"
   ],
   "client": [
   ],
