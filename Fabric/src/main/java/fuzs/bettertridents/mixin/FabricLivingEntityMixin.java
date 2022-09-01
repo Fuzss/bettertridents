@@ -1,5 +1,6 @@
 package fuzs.bettertridents.mixin;
 
+import com.google.common.collect.Lists;
 import fuzs.bettertridents.BetterTridents;
 import fuzs.bettertridents.api.event.entity.living.LivingDropsCallback;
 import fuzs.bettertridents.api.event.entity.living.LivingExperienceDropCallback;
@@ -14,7 +15,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
