@@ -4,9 +4,10 @@
   "compatibilityLevel": "JAVA_17",
   "package": "fuzs.bettertridents.mixin",
   "refmap": "bettertridents.refmap.json",
+  "plugin": "fuzs.bettertridents.mixin.ModMixinConfigPlugin",
   "mixins": [
-    "EntityMixin",
-    "FabricLivingEntityMixin"
+    "EntityFabricMixin",
+    "LivingEntityFabricMixin"
   ],
   "client": [
   ],

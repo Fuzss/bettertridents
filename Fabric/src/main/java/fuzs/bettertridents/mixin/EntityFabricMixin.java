@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.Collection;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements CapturedDropsEntity {
+abstract class EntityFabricMixin implements CapturedDropsEntity {
     @Unique
     @Nullable
     private Collection<ItemEntity> custom$capturedDrops;

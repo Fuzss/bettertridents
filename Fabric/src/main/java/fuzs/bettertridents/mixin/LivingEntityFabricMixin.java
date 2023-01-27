@@ -25,14 +25,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Collection;
 
 @Mixin(LivingEntity.class)
-public abstract class FabricLivingEntityMixin extends Entity {
+abstract class LivingEntityFabricMixin extends Entity {
     @Shadow
     @Nullable
     protected Player lastHurtByPlayer;
     @Shadow
     protected int lastHurtByPlayerTime;
 
-    public FabricLivingEntityMixin(EntityType<?> entityType, Level level) {
+    public LivingEntityFabricMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 
