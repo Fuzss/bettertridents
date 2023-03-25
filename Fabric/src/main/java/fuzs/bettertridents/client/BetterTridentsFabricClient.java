@@ -1,13 +1,13 @@
 package fuzs.bettertridents.client;
 
 import fuzs.bettertridents.BetterTridents;
-import fuzs.puzzleslib.client.core.ClientCoreServices;
+import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import net.fabricmc.api.ClientModInitializer;
 
 public class BetterTridentsFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ClientCoreServices.FACTORIES.clientModConstructor(BetterTridents.MOD_ID).accept(new BetterTridentsClient());
+        ClientModConstructor.construct(BetterTridents.MOD_ID, BetterTridentsClient::new);
     }
 }

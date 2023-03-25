@@ -1,4 +1,4 @@
-package fuzs.bettertridents.world.item.enchantment;
+package fuzs.bettertridents.util;
 
 import fuzs.bettertridents.BetterTridents;
 import fuzs.bettertridents.config.ServerConfig;
@@ -7,7 +7,7 @@ import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
-public class ModEnchantmentHelper {
+public class AquaticEnchantmentHelper {
 
     public static float getAquaticDamageBonus(ItemStack stack, LivingEntity entity, float damageAmount) {
         if (!BetterTridents.CONFIG.get(ServerConfig.class).boostImpaling) return damageAmount;

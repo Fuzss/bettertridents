@@ -1,7 +1,7 @@
 package fuzs.bettertridents.client;
 
 import fuzs.bettertridents.BetterTridents;
-import fuzs.puzzleslib.client.core.ClientCoreServices;
+import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -12,6 +12,6 @@ public class BetterTridentsForgeClient {
 
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
-        ClientCoreServices.FACTORIES.clientModConstructor(BetterTridents.MOD_ID).accept(new BetterTridentsClient());
+        ClientModConstructor.construct(BetterTridents.MOD_ID, BetterTridentsClient::new);
     }
 }

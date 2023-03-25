@@ -2,10 +2,14 @@ package fuzs.bettertridents;
 
 import fuzs.bettertridents.config.CommonConfig;
 import fuzs.bettertridents.config.ServerConfig;
+import fuzs.bettertridents.handler.LoyalDropsHandler;
 import fuzs.bettertridents.init.ModRegistry;
-import fuzs.puzzleslib.config.ConfigHolder;
-import fuzs.puzzleslib.core.CoreServices;
-import fuzs.puzzleslib.core.ModConstructor;
+import fuzs.puzzleslib.api.config.v3.ConfigHolder;
+import fuzs.puzzleslib.api.core.v1.ModConstructor;
+import fuzs.puzzleslib.api.event.v1.LootTableLoadEvents;
+import fuzs.puzzleslib.api.event.v1.entity.living.LivingDropsCallback;
+import fuzs.puzzleslib.api.event.v1.entity.living.LivingExperienceDropCallback;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -18,22 +22,26 @@ public class BetterTridents implements ModConstructor {
     public static final String MOD_NAME = "Better Tridents";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
-    @SuppressWarnings("Convert2MethodRef")
-    public static final ConfigHolder CONFIG = CoreServices.FACTORIES
-            .serverConfig(ServerConfig.class, () -> new ServerConfig())
-            .commonConfig(CommonConfig.class, () -> new CommonConfig());
+    public static final ConfigHolder CONFIG = ConfigHolder.builder(MOD_ID).server(ServerConfig.class).common(CommonConfig.class);
 
     @Override
     public void onConstructMod() {
-        CONFIG.bakeConfigs(MOD_ID);
         ModRegistry.touch();
+        registerHandlers();
     }
 
-    @Override
-    public void onLootTableModification(LootTablesModifyContext context) {
-        if (!BetterTridents.CONFIG.get(CommonConfig.class).tridentFragmentDrop) return;
-        if (EntityType.ELDER_GUARDIAN.getDefaultLootTable().equals(context.getId())) {
-            context.addLootPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(ModRegistry.TRIDENT_FRAGMENT_ITEM.get())).build());
-        }
+    private static void registerHandlers() {
+        LivingDropsCallback.EVENT.register(LoyalDropsHandler::onLivingDrops);
+        LivingExperienceDropCallback.EVENT.register(LoyalDropsHandler::onLivingExperienceDrop);
+        LootTableLoadEvents.MODIFY.register((lootManager, identifier, addPool, removePool) -> {
+            if (!BetterTridents.CONFIG.get(CommonConfig.class).tridentFragmentDrop) return;
+            if (EntityType.ELDER_GUARDIAN.getDefaultLootTable().equals(identifier)) {
+                addPool.accept(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(ModRegistry.TRIDENT_FRAGMENT_ITEM.get())).build());
+            }
+        });
+    }
+
+    public static ResourceLocation id(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 }

@@ -6,9 +6,10 @@ import fuzs.bettertridents.mixin.accessor.ThrownTridentAccessor;
 import fuzs.bettertridents.world.entity.LastDamageSourceEntity;
 import fuzs.bettertridents.world.entity.item.LoyalExperienceOrb;
 import fuzs.bettertridents.world.entity.item.LoyalItemEntity;
+import fuzs.puzzleslib.api.event.v1.core.EventResult;
+import fuzs.puzzleslib.api.event.v1.data.DefaultedInt;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Unit;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -24,39 +25,37 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.UUID;
 
 public class LoyalDropsHandler {
 
-    public Optional<Unit> onLivingDrops(LivingEntity entity, DamageSource source, Collection<ItemEntity> drops, int lootingLevel, boolean recentlyHit) {
-        if (!BetterTridents.CONFIG.get(ServerConfig.class).loyaltyCapturesDrops) return Optional.empty();
-        int loyaltyLevel = this.getLoyaltyLevel(source);
+    public static EventResult onLivingDrops(LivingEntity entity, DamageSource source, Collection<ItemEntity> drops, int lootingLevel, boolean recentlyHit) {
+        if (!BetterTridents.CONFIG.get(ServerConfig.class).loyaltyCapturesDrops) return EventResult.PASS;
+        int loyaltyLevel = getLoyaltyLevel(source);
         if (loyaltyLevel > 0) {
             for (ItemEntity itemEntity : drops) {
                 itemEntity = new LoyalItemEntity(itemEntity, source.getEntity().getUUID(), loyaltyLevel);
                 entity.level.addFreshEntity(itemEntity);
             }
-            return Optional.of(Unit.INSTANCE);
+            return EventResult.INTERRUPT;
         }
-        return Optional.empty();
+        return EventResult.PASS;
     }
 
-    public OptionalInt onLivingExperienceDrop(LivingEntity entity, @Nullable Player attackingPlayer, int originalExperience, int droppedExperience) {
-        if (!BetterTridents.CONFIG.get(ServerConfig.class).loyaltyCapturesDrops) return OptionalInt.empty();
-        DamageSource source = ((LastDamageSourceEntity) entity).custom$getLastDamageSource();
+    public static EventResult onLivingExperienceDrop(LivingEntity entity, @Nullable Player attackingPlayer, DefaultedInt droppedExperience) {
+        if (!BetterTridents.CONFIG.get(ServerConfig.class).loyaltyCapturesDrops) return EventResult.PASS;
+        DamageSource source = ((LastDamageSourceEntity) entity).bettertridents$getLastDamageSource();
         if (source != null) {
-            int loyaltyLevel = this.getLoyaltyLevel(source);
+            int loyaltyLevel = getLoyaltyLevel(source);
             if (loyaltyLevel > 0) {
-                this.awardExperienceOrbs((ServerLevel) entity.level, entity.position(), droppedExperience, (Player) source.getEntity(), loyaltyLevel);
-                return OptionalInt.of(0);
+                awardExperienceOrbs((ServerLevel) entity.level, entity.position(), droppedExperience.getAsInt(), (Player) source.getEntity(), loyaltyLevel);
+                return EventResult.INTERRUPT;
             }
         }
-        return OptionalInt.empty();
+        return EventResult.PASS;
     }
 
-    private int getLoyaltyLevel(DamageSource source) {
+    private static int getLoyaltyLevel(DamageSource source) {
         if (source.getEntity() instanceof Player player) {
             if (source.getDirectEntity() instanceof ThrownTrident trident) {
                 return trident.getEntityData().get(ThrownTridentAccessor.getLoyaltyId());
@@ -67,11 +66,11 @@ public class LoyalDropsHandler {
         return 0;
     }
 
-    public void awardExperienceOrbs(ServerLevel pLevel, Vec3 pPos, int pAmount, Player player, int loyaltyLevel) {
-        while (pAmount > 0) {
-            int i = ExperienceOrb.getExperienceValue(pAmount);
-            pAmount -= i;
-            pLevel.addFreshEntity(new LoyalExperienceOrb(pLevel, pPos.x(), pPos.y(), pPos.z(), i, player.getUUID(), loyaltyLevel));
+    public static void awardExperienceOrbs(ServerLevel level, Vec3 pos, int amount, Player player, int loyaltyLevel) {
+        while (amount > 0) {
+            int i = ExperienceOrb.getExperienceValue(amount);
+            amount -= i;
+            level.addFreshEntity(new LoyalExperienceOrb(level, pos.x(), pos.y(), pos.z(), i, player.getUUID(), loyaltyLevel));
         }
     }
 

@@ -3,7 +3,7 @@ package fuzs.bettertridents.mixin;
 import fuzs.bettertridents.BetterTridents;
 import fuzs.bettertridents.config.ServerConfig;
 import fuzs.bettertridents.init.ModRegistry;
-import fuzs.bettertridents.world.item.enchantment.ModEnchantmentHelper;
+import fuzs.bettertridents.util.AquaticEnchantmentHelper;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ThrownTrident.class)
-public abstract class ThrownTridentMixin extends AbstractArrow {
+abstract class ThrownTridentMixin extends AbstractArrow {
     @Shadow
     @Final
     private static EntityDataAccessor<Byte> ID_LOYALTY;
@@ -56,7 +56,7 @@ public abstract class ThrownTridentMixin extends AbstractArrow {
 
     @ModifyVariable(method = "onHitEntity", at = @At(value = "STORE", ordinal = 1), ordinal = 0)
     protected float onHitEntity$modifyVariable$store(float damageAmount, EntityHitResult entityHitResult) {
-        return ModEnchantmentHelper.getAquaticDamageBonus(this.tridentItem, (LivingEntity) entityHitResult.getEntity(), damageAmount);
+        return AquaticEnchantmentHelper.getAquaticDamageBonus(this.tridentItem, (LivingEntity) entityHitResult.getEntity(), damageAmount);
     }
 
     @Inject(method = "tryPickup", at = @At("HEAD"), cancellable = true)

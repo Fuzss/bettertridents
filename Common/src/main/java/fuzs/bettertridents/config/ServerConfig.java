@@ -1,7 +1,7 @@
 package fuzs.bettertridents.config;
 
-import fuzs.puzzleslib.config.ConfigCore;
-import fuzs.puzzleslib.config.annotation.Config;
+import fuzs.puzzleslib.api.config.v3.Config;
+import fuzs.puzzleslib.api.config.v3.ConfigCore;
 
 public class ServerConfig implements ConfigCore {
     @Config(description = "Makes the impaling enchantment apply to any creature in contact with rain or water.")

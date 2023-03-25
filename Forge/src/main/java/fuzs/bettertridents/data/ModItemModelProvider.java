@@ -1,18 +1,18 @@
 package fuzs.bettertridents.data;
 
 import fuzs.bettertridents.init.ModRegistry;
-import net.minecraft.data.DataGenerator;
-import net.minecraftforge.client.model.generators.ItemModelProvider;
+import fuzs.puzzleslib.api.data.v1.AbstractModelProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-public class ModItemModelProvider extends ItemModelProvider {
+public class ModItemModelProvider extends AbstractModelProvider {
 
-    public ModItemModelProvider(DataGenerator generator, String modId, ExistingFileHelper existingFileHelper) {
-        super(generator, modId, existingFileHelper);
+    public ModItemModelProvider(PackOutput packOutput, String modId, ExistingFileHelper fileHelper) {
+        super(packOutput, modId, fileHelper);
     }
 
     @Override
-    protected void registerModels() {
+    protected void registerStatesAndModels() {
         this.basicItem(ModRegistry.TRIDENT_FRAGMENT_ITEM.get());
     }
 }

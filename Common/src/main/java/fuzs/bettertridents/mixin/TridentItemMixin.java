@@ -2,7 +2,7 @@ package fuzs.bettertridents.mixin;
 
 import fuzs.bettertridents.BetterTridents;
 import fuzs.bettertridents.config.ServerConfig;
-import fuzs.bettertridents.core.ModServices;
+import fuzs.bettertridents.core.CommonAbstractions;
 import fuzs.bettertridents.init.ModRegistry;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(TridentItem.class)
-public abstract class TridentItemMixin extends Item {
+abstract class TridentItemMixin extends Item {
 
     public TridentItemMixin(Properties properties) {
         super(properties);
@@ -26,7 +26,7 @@ public abstract class TridentItemMixin extends Item {
     @Override
     public boolean isValidRepairItem(ItemStack itemStack, ItemStack itemStack2) {
         if (!BetterTridents.CONFIG.get(ServerConfig.class).repairTridents) return super.isValidRepairItem(itemStack, itemStack2);
-        return ModServices.ABSTRACTIONS.isValidTridentRepairItem(itemStack, itemStack2);
+        return CommonAbstractions.INSTANCE.isValidTridentRepairItem(itemStack, itemStack2);
     }
 
     @ModifyVariable(method = "releaseUsing", at = @At("STORE"), ordinal = 0)

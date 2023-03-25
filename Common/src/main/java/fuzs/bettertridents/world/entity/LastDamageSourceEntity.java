@@ -5,5 +5,5 @@ import org.jetbrains.annotations.Nullable;
 
 public interface LastDamageSourceEntity {
 
-    @Nullable DamageSource custom$getLastDamageSource();
+    @Nullable DamageSource bettertridents$getLastDamageSource();
 }

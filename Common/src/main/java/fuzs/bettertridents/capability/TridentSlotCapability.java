@@ -1,6 +1,6 @@
 package fuzs.bettertridents.capability;
 
-import fuzs.puzzleslib.capability.data.CapabilityComponent;
+import fuzs.puzzleslib.api.capability.v2.data.CapabilityComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
