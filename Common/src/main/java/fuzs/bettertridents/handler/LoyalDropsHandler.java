@@ -100,15 +100,7 @@ public class LoyalDropsHandler {
     }
 
     @Nullable
-    public static Player isAcceptableReturnOwner(Level level, @Nullable UUID owner) {
-        if (owner != null) {
-            Player player = level.getPlayerByUUID(owner);
-            if (player == null || !player.isAlive()) {
-                return null;
-            } else {
-                return !(player instanceof ServerPlayer) || !player.isSpectator() ? player : null;
-            }
-        }
-        return null;
+    public static Player isAcceptableReturnOwner(Level level, @Nullable Entity owner) {
+        return owner instanceof Player player && player.isAlive() && !player.isSpectator() ? player : null;
     }
 }

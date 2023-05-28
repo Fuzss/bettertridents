@@ -44,9 +44,14 @@ public class LoyalExperienceOrb extends ExperienceOrb {
 
     @Override
     public void tick() {
-        Player owner = LoyalDropsHandler.isAcceptableReturnOwner(this.level, this.owner);
-        if (owner != null) {
-            LoyalDropsHandler.tickLoyalEntity(this, owner, this.entityData.get(ID_LOYALTY));
+        Player player;
+        if (this.owner != null) {
+            player = LoyalDropsHandler.isAcceptableReturnOwner(this.level, this.level.getPlayerByUUID(this.owner));
+        } else {
+            player = null;
+        }
+        if (player != null) {
+            LoyalDropsHandler.tickLoyalEntity(this, player, this.entityData.get(ID_LOYALTY));
 
             // allow this to age, just in case something is wrong, so we don't stay in the world forever
             ((ExperienceOrbAccessor) this).setAge(((ExperienceOrbAccessor) this).getAge() + 1);

@@ -18,7 +18,7 @@ public class BetterTridentsClient implements ClientModConstructor {
 
     @Override
     public void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsContext context) {
-        context.registerBuildListener(CreativeModeTabs.INGREDIENTS, (featureFlagSet, output, bl) -> {
+        context.registerBuildListener(CreativeModeTabs.INGREDIENTS, (itemDisplayParameters, output) -> {
             output.accept(ModRegistry.TRIDENT_FRAGMENT_ITEM.get());
         });
     }

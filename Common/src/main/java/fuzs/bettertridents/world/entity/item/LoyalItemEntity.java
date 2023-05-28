@@ -26,7 +26,7 @@ public class LoyalItemEntity extends ItemEntity {
         this.copyPosition(itemEntity);
         ((ItemEntityAccessor) this).setAge(itemEntity.getAge());
         ((ItemEntityAccessor) this).setBobOffs(itemEntity.bobOffs);
-        this.setOwner(owner);
+        this.setThrower(owner);
         if (loyaltyLevel < 1) throw new IllegalStateException("Loyalty level missing from loyal item entity, was %s".formatted(loyaltyLevel));
         this.entityData.set(ID_LOYALTY, (byte) loyaltyLevel);
     }
