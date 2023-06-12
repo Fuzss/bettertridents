@@ -21,7 +21,7 @@ public class LoyalItemEntity extends ItemEntity {
     }
 
     public LoyalItemEntity(ItemEntity itemEntity, UUID owner, int loyaltyLevel) {
-        super(ModRegistry.LOYAL_ITEM_ENTITY_TYPE.get(), itemEntity.level);
+        super(ModRegistry.LOYAL_ITEM_ENTITY_TYPE.get(), itemEntity.level());
         this.setItem(itemEntity.getItem().copy());
         this.copyPosition(itemEntity);
         ((ItemEntityAccessor) this).setAge(itemEntity.getAge());
@@ -41,7 +41,7 @@ public class LoyalItemEntity extends ItemEntity {
     public void tick() {
         // just let super handle discarding an empty item
         if (!this.getItem().isEmpty()) {
-            Player owner = LoyalDropsHandler.isAcceptableReturnOwner(this.level, this.getOwner());
+            Player owner = LoyalDropsHandler.isAcceptableReturnOwner(this.level(), this.getOwner());
             if (owner != null) {
                 LoyalDropsHandler.tickLoyalEntity(this, owner, this.entityData.get(ID_LOYALTY));
 
@@ -49,7 +49,7 @@ public class LoyalItemEntity extends ItemEntity {
                 if (this.getAge() != -32768) {
                     ((ItemEntityAccessor) this).setAge(this.getAge() + 1);
                 }
-                if (!this.level.isClientSide && this.getAge() >= 6000) {
+                if (!this.level().isClientSide && this.getAge() >= 6000) {
                     this.discard();
                 }
             } else {

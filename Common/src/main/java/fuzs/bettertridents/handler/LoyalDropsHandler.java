@@ -9,7 +9,6 @@ import fuzs.bettertridents.world.entity.item.LoyalItemEntity;
 import fuzs.puzzleslib.api.event.v1.core.EventResult;
 import fuzs.puzzleslib.api.event.v1.data.DefaultedInt;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -25,7 +24,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.UUID;
 
 public class LoyalDropsHandler {
 
@@ -35,7 +33,7 @@ public class LoyalDropsHandler {
         if (loyaltyLevel > 0) {
             for (ItemEntity itemEntity : drops) {
                 itemEntity = new LoyalItemEntity(itemEntity, source.getEntity().getUUID(), loyaltyLevel);
-                entity.level.addFreshEntity(itemEntity);
+                entity.level().addFreshEntity(itemEntity);
             }
             return EventResult.INTERRUPT;
         }
@@ -48,7 +46,7 @@ public class LoyalDropsHandler {
         if (source != null) {
             int loyaltyLevel = getLoyaltyLevel(source);
             if (loyaltyLevel > 0) {
-                awardExperienceOrbs((ServerLevel) entity.level, entity.position(), droppedExperience.getAsInt(), (Player) source.getEntity(), loyaltyLevel);
+                awardExperienceOrbs((ServerLevel) entity.level(), entity.position(), droppedExperience.getAsInt(), (Player) source.getEntity(), loyaltyLevel);
                 return EventResult.INTERRUPT;
             }
         }
@@ -83,16 +81,16 @@ public class LoyalDropsHandler {
         entity.noPhysics = true;
         Vec3 vec3 = owner.getEyePosition().subtract(entity.position());
         entity.setPosRaw(entity.getX(), entity.getY() + vec3.y * 0.015 * loyaltyLevel, entity.getZ());
-        if (entity.level.isClientSide) {
+        if (entity.level().isClientSide) {
             entity.yOld = entity.getY();
         }
         entity.setDeltaMovement(entity.getDeltaMovement().scale(0.95).add(vec3.normalize().scale(0.05 * loyaltyLevel)));
 
         entity.baseTick();
-        if (!entity.isOnGround() || entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-5F || (entity.tickCount + entity.getId()) % 4 == 0) {
+        if (!entity.onGround() || entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-5F || (entity.tickCount + entity.getId()) % 4 == 0) {
             entity.move(MoverType.SELF, entity.getDeltaMovement());
         }
-        if (!entity.level.isClientSide) {
+        if (!entity.level().isClientSide) {
             if (entity.getDeltaMovement().subtract(vec3).lengthSqr() > 0.01) {
                 entity.hasImpulse = true;
             }

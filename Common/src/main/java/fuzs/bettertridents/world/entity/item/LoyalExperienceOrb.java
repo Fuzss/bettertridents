@@ -46,7 +46,7 @@ public class LoyalExperienceOrb extends ExperienceOrb {
     public void tick() {
         Player player;
         if (this.owner != null) {
-            player = LoyalDropsHandler.isAcceptableReturnOwner(this.level, this.level.getPlayerByUUID(this.owner));
+            player = LoyalDropsHandler.isAcceptableReturnOwner(this.level(), this.level().getPlayerByUUID(this.owner));
         } else {
             player = null;
         }

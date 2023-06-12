@@ -34,9 +34,9 @@ abstract class ThrownTridentMixin extends AbstractArrow {
     }
 
     @Override
-    protected void outOfWorld() {
+    protected void onBelowWorld() {
         if (!BetterTridents.CONFIG.get(ServerConfig.class).returnTridentFromVoid) {
-            super.outOfWorld();
+            super.onBelowWorld();
             return;
         }
         if (this.entityData.get(ID_LOYALTY) > 0 && this.isAcceptibleReturnOwner()) {
@@ -46,7 +46,7 @@ abstract class ThrownTridentMixin extends AbstractArrow {
                 return;
             }
         }
-        super.outOfWorld();
+        super.onBelowWorld();
     }
 
     @Shadow
