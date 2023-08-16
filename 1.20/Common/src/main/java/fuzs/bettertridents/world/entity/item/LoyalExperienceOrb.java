@@ -58,7 +58,7 @@ public class LoyalExperienceOrb extends ExperienceOrb {
             if (((ExperienceOrbAccessor) this).getAge() >= 6000) {
                 this.discard();
             }
-        } else {
+        } else if (!this.level().isClientSide) {
             super.tick();
         }
     }

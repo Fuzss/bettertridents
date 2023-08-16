@@ -52,7 +52,7 @@ public class LoyalItemEntity extends ItemEntity {
                 if (!this.level().isClientSide && this.getAge() >= 6000) {
                     this.discard();
                 }
-            } else {
+            } else if (!this.level().isClientSide) {
                 super.tick();
             }
         } else {
