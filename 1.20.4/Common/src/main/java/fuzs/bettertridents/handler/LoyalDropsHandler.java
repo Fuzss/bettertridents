@@ -32,7 +32,7 @@ public class LoyalDropsHandler {
         int loyaltyLevel = getLoyaltyLevel(source);
         if (loyaltyLevel > 0) {
             for (ItemEntity itemEntity : drops) {
-                itemEntity = new LoyalItemEntity(itemEntity, source.getEntity().getUUID(), loyaltyLevel);
+                itemEntity = new LoyalItemEntity(itemEntity, source.getEntity(), loyaltyLevel);
                 entity.level().addFreshEntity(itemEntity);
             }
             return EventResult.INTERRUPT;

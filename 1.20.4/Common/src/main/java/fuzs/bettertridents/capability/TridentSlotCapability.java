@@ -1,18 +1,29 @@
 package fuzs.bettertridents.capability;
 
-import fuzs.puzzleslib.api.capability.v2.data.CapabilityComponent;
+import fuzs.puzzleslib.api.capability.v3.data.CapabilityComponent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 
-public interface TridentSlotCapability extends CapabilityComponent {
+public class TridentSlotCapability extends CapabilityComponent<ThrownTrident> {
+    private static final String TAG_TRIDENT_SLOT = "trident_slot";
 
-    void setSlot(int slot);
+    private int slot = -1;
 
-    int getSlot();
+    public void setSlot(int slot) {
+        if (this.slot != slot) {
+            this.slot = slot;
+            this.setChanged();
+        }
+    }
 
-    default boolean addItemToInventory(Player player, ItemStack itemStack) {
+    public int getSlot() {
+        return this.slot;
+    }
+
+    public boolean addItemToInventory(Player player, ItemStack itemStack) {
         this.verifyEquippedItem(itemStack);
         Inventory inventory = player.getInventory();
         int slot = this.findSlotAtIndex(inventory, this.getSlot());
@@ -41,5 +52,17 @@ public interface TridentSlotCapability extends CapabilityComponent {
             return inventory.selected;
         }
         return -1;
+    }
+
+    @Override
+    public void write(CompoundTag tag) {
+        if (this.slot != -1) {
+            tag.putInt(TAG_TRIDENT_SLOT, this.slot);
+        }
+    }
+
+    @Override
+    public void read(CompoundTag tag) {
+        this.slot = tag.getInt(TAG_TRIDENT_SLOT);
     }
 }

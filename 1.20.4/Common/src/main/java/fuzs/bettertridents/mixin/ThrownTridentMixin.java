@@ -26,11 +26,9 @@ abstract class ThrownTridentMixin extends AbstractArrow {
     @Shadow
     @Final
     private static EntityDataAccessor<Byte> ID_LOYALTY;
-    @Shadow
-    private ItemStack tridentItem;
 
-    protected ThrownTridentMixin(EntityType<? extends AbstractArrow> entityType, Level level) {
-        super(entityType, level);
+    protected ThrownTridentMixin(EntityType<? extends AbstractArrow> entityType, Level level, ItemStack pickupItemStack) {
+        super(entityType, level, pickupItemStack);
     }
 
     @Override
@@ -51,12 +49,12 @@ abstract class ThrownTridentMixin extends AbstractArrow {
 
     @Shadow
     private boolean isAcceptibleReturnOwner() {
-        throw new IllegalStateException();
+        throw new RuntimeException();
     }
 
     @ModifyVariable(method = "onHitEntity", at = @At(value = "STORE", ordinal = 1), ordinal = 0)
     protected float onHitEntity$modifyVariable$store(float damageAmount, EntityHitResult entityHitResult) {
-        return AquaticEnchantmentHelper.getAquaticDamageBonus(this.tridentItem, (LivingEntity) entityHitResult.getEntity(), damageAmount);
+        return AquaticEnchantmentHelper.getAquaticDamageBonus(this.getPickupItemStackOrigin(), (LivingEntity) entityHitResult.getEntity(), damageAmount);
     }
 
     @Inject(method = "tryPickup", at = @At("HEAD"), cancellable = true)
@@ -64,12 +62,12 @@ abstract class ThrownTridentMixin extends AbstractArrow {
         if (!BetterTridents.CONFIG.get(ServerConfig.class).returnTridentToSlot) return;
         boolean addedToInventory;
         if (this.pickup == Pickup.ALLOWED) {
-            addedToInventory = ModRegistry.TRIDENT_SLOT_CAPABILITY.maybeGet(this).map(capability -> capability.addItemToInventory(player, this.getPickupItem())).orElse(false);
+            addedToInventory = ModRegistry.TRIDENT_SLOT_CAPABILITY.get(ThrownTrident.class.cast(this)).addItemToInventory(player, this.getPickupItem());
         } else {
             addedToInventory = super.tryPickup(player);
         }
         if (!addedToInventory) {
-            addedToInventory = this.isNoPhysics() && this.ownedBy(player) && ModRegistry.TRIDENT_SLOT_CAPABILITY.maybeGet(this).map(capability -> capability.addItemToInventory(player, this.getPickupItem())).orElse(false);
+            addedToInventory = this.isNoPhysics() && this.ownedBy(player) && ModRegistry.TRIDENT_SLOT_CAPABILITY.get(ThrownTrident.class.cast(this)).addItemToInventory(player, this.getPickupItem());
         }
         callback.setReturnValue(addedToInventory);
     }

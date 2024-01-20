@@ -10,7 +10,7 @@ public class BetterTridentsClient implements ClientModConstructor {
 
     @Override
     public void onRegisterEntityRenderers(EntityRenderersContext context) {
-        context.registerEntityRenderer(ModRegistry.LOYAL_ITEM_ENTITY_TYPE.get(), ItemEntityRenderer::new);
-        context.registerEntityRenderer(ModRegistry.LOYAL_EXPERIENCE_ORB_ENTITY_TYPE.get(), ExperienceOrbRenderer::new);
+        context.registerEntityRenderer(ModRegistry.LOYAL_ITEM_ENTITY_TYPE.value(), ItemEntityRenderer::new);
+        context.registerEntityRenderer(ModRegistry.LOYAL_EXPERIENCE_ORB_ENTITY_TYPE.value(), ExperienceOrbRenderer::new);
     }
 }

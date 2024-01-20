@@ -38,7 +38,7 @@ public class BetterTridents implements ModConstructor {
         LootTableLoadEvents.MODIFY.register((lootManager, identifier, addPool, removePool) -> {
             if (!BetterTridents.CONFIG.get(CommonConfig.class).tridentFragmentDrop) return;
             if (EntityType.ELDER_GUARDIAN.getDefaultLootTable().equals(identifier)) {
-                addPool.accept(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(ModRegistry.TRIDENT_FRAGMENT_ITEM.get())).build());
+                addPool.accept(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(ModRegistry.TRIDENT_FRAGMENT_ITEM.value())).build());
             }
         });
     }
@@ -46,7 +46,7 @@ public class BetterTridents implements ModConstructor {
     @Override
     public void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsContext context) {
         context.registerBuildListener(CreativeModeTabs.INGREDIENTS, (itemDisplayParameters, output) -> {
-            output.accept(ModRegistry.TRIDENT_FRAGMENT_ITEM.get());
+            output.accept(ModRegistry.TRIDENT_FRAGMENT_ITEM.value());
         });
     }
 

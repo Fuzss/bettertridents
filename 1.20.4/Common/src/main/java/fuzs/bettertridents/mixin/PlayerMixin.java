@@ -18,7 +18,7 @@ abstract class PlayerMixin extends LivingEntity {
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "STORE", ordinal = 0), ordinal = 1)
-    public float attack$modifyVariable$store(float damageAmount, Entity entity) {
+    public float attack(float damageAmount, Entity entity) {
         return AquaticEnchantmentHelper.getAquaticDamageBonus(this.getMainHandItem(), (LivingEntity) entity, damageAmount);
     }
 }

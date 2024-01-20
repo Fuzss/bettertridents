@@ -6,12 +6,11 @@ import fuzs.bettertridents.mixin.accessor.ItemEntityAccessor;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-
-import java.util.UUID;
 
 public class LoyalItemEntity extends ItemEntity {
     private static final EntityDataAccessor<Byte> ID_LOYALTY = SynchedEntityData.defineId(LoyalItemEntity.class, EntityDataSerializers.BYTE);
@@ -20,13 +19,13 @@ public class LoyalItemEntity extends ItemEntity {
         super(entityType, level);
     }
 
-    public LoyalItemEntity(ItemEntity itemEntity, UUID owner, int loyaltyLevel) {
-        super(ModRegistry.LOYAL_ITEM_ENTITY_TYPE.get(), itemEntity.level());
+    public LoyalItemEntity(ItemEntity itemEntity, Entity thrower, int loyaltyLevel) {
+        super(ModRegistry.LOYAL_ITEM_ENTITY_TYPE.value(), itemEntity.level());
         this.setItem(itemEntity.getItem().copy());
         this.copyPosition(itemEntity);
         ((ItemEntityAccessor) this).setAge(itemEntity.getAge());
         ((ItemEntityAccessor) this).setBobOffs(itemEntity.bobOffs);
-        this.setThrower(owner);
+        this.setThrower(thrower);
         if (loyaltyLevel < 1) throw new IllegalStateException("Loyalty level missing from loyal item entity, was %s".formatted(loyaltyLevel));
         this.entityData.set(ID_LOYALTY, (byte) loyaltyLevel);
     }
@@ -44,7 +43,6 @@ public class LoyalItemEntity extends ItemEntity {
             Player owner = LoyalDropsHandler.isAcceptableReturnOwner(this.level(), this.getOwner());
             if (owner != null) {
                 LoyalDropsHandler.tickLoyalEntity(this, owner, this.entityData.get(ID_LOYALTY));
-
                 // allow this to age, just in case something is wrong, so we don't stay in the world forever
                 if (this.getAge() != -32768) {
                     ((ItemEntityAccessor) this).setAge(this.getAge() + 1);

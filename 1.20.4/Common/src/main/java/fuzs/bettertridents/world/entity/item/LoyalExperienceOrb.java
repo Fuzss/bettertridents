@@ -22,7 +22,7 @@ public class LoyalExperienceOrb extends ExperienceOrb {
     private UUID owner;
 
     public LoyalExperienceOrb(Level level, double pX, double pY, double pZ, int pValue, UUID owner, int loyaltyLevel) {
-        super(ModRegistry.LOYAL_EXPERIENCE_ORB_ENTITY_TYPE.get(), level);
+        super(ModRegistry.LOYAL_EXPERIENCE_ORB_ENTITY_TYPE.value(), level);
         this.setPos(pX, pY, pZ);
         this.setYRot((float)(this.random.nextDouble() * 360.0D));
         this.setDeltaMovement((this.random.nextDouble() * (double)0.2F - (double)0.1F) * 2.0D, this.random.nextDouble() * 0.2D * 2.0D, (this.random.nextDouble() * (double)0.2F - (double)0.1F) * 2.0D);
