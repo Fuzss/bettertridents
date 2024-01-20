@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_17",
+  "package": "fuzs.bettertridents.mixin",
+  "refmap": "bettertridents.refmap.json",
+  "plugin": "fuzs.bettertridents.mixin.ModMixinConfigPlugin",
+  "mixins": [
+    "LivingEntityMixin",
+    "MobMixin",
+    "PlayerMixin",
+    "ThrownTridentMixin",
+    "TridentItemMixin",
+    "accessor.ExperienceOrbAccessor",
+    "accessor.ItemEntityAccessor",
+    "accessor.ThrownTridentAccessor"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
