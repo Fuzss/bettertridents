@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public class LoyalItemEntity extends ItemEntity {
-    private static final EntityDataAccessor<Byte> ID_LOYALTY = SynchedEntityData.defineId(LoyalItemEntity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Byte> DATA_LOYALTY = SynchedEntityData.defineId(LoyalItemEntity.class, EntityDataSerializers.BYTE);
 
     public LoyalItemEntity(EntityType<? extends ItemEntity> entityType, Level level) {
         super(entityType, level);
@@ -27,13 +27,13 @@ public class LoyalItemEntity extends ItemEntity {
         ((ItemEntityAccessor) this).setBobOffs(itemEntity.bobOffs);
         this.setThrower(thrower);
         if (loyaltyLevel < 1) throw new IllegalStateException("Loyalty level missing from loyal item entity, was %s".formatted(loyaltyLevel));
-        this.entityData.set(ID_LOYALTY, (byte) loyaltyLevel);
+        this.getEntityData().set(DATA_LOYALTY, (byte) loyaltyLevel);
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(ID_LOYALTY, (byte) 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_LOYALTY, (byte) 0);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class LoyalItemEntity extends ItemEntity {
         if (!this.getItem().isEmpty()) {
             Player owner = LoyalDropsHandler.isAcceptableReturnOwner(this.level(), this.getOwner());
             if (owner != null) {
-                LoyalDropsHandler.tickLoyalEntity(this, owner, this.entityData.get(ID_LOYALTY));
+                LoyalDropsHandler.tickLoyalEntity(this, owner, this.getEntityData().get(DATA_LOYALTY));
                 // allow this to age, just in case something is wrong, so we don't stay in the world forever
                 if (this.getAge() != -32768) {
                     ((ItemEntityAccessor) this).setAge(this.getAge() + 1);

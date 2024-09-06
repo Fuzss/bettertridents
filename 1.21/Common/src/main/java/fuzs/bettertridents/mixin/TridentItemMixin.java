@@ -26,12 +26,15 @@ abstract class TridentItemMixin extends Item {
 
     @Override
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
-        if (!BetterTridents.CONFIG.get(ServerConfig.class).repairTridents) return super.isValidRepairItem(stack, repairCandidate);
-        return repairCandidate.is(Items.PRISMARINE_SHARD);
+        if (!BetterTridents.CONFIG.get(ServerConfig.class).repairTridents) {
+            return super.isValidRepairItem(stack, repairCandidate);
+        } else {
+            return repairCandidate.is(Items.PRISMARINE_SHARD);
+        }
     }
 
     @ModifyVariable(method = "releaseUsing", at = @At("STORE"), ordinal = 0)
-    public ThrownTrident releaseUsing$storeThrownTrident(ThrownTrident trident, ItemStack stack, Level level, LivingEntity thrower) {
+    public ThrownTrident releaseUsing(ThrownTrident trident, ItemStack stack, Level level, LivingEntity thrower) {
         if (!BetterTridents.CONFIG.get(ServerConfig.class).returnTridentToSlot) return trident;
         if (thrower.getUseItem() == stack) {
             TridentSlotCapability capability = ModRegistry.TRIDENT_SLOT_CAPABILITY.get(trident);
@@ -41,6 +44,7 @@ abstract class TridentItemMixin extends Item {
                 capability.setSlot(((Player) thrower).getInventory().selected);
             }
         }
+
         return trident;
     }
 }

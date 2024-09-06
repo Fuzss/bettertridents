@@ -1,6 +1,7 @@
 package fuzs.bettertridents.capability;
 
 import fuzs.puzzleslib.api.capability.v3.data.CapabilityComponent;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -38,10 +39,8 @@ public class TridentSlotCapability extends CapabilityComponent<ThrownTrident> {
     }
 
     private void verifyEquippedItem(ItemStack itemStack) {
-        CompoundTag compoundtag = itemStack.getTag();
-        if (compoundtag != null) {
-            itemStack.getItem().verifyTagAfterLoad(compoundtag);
-        }
+        // copied from LivingEntity::verifyEquippedItem as the method is protected
+        itemStack.getItem().verifyComponentsAfterLoad(itemStack);
     }
 
     private int findSlotAtIndex(Inventory inventory, int slot) {
@@ -55,14 +54,14 @@ public class TridentSlotCapability extends CapabilityComponent<ThrownTrident> {
     }
 
     @Override
-    public void write(CompoundTag tag) {
+    public void write(CompoundTag compoundTag, HolderLookup.Provider registries) {
         if (this.slot != -1) {
-            tag.putInt(TAG_TRIDENT_SLOT, this.slot);
+            compoundTag.putInt(TAG_TRIDENT_SLOT, this.slot);
         }
     }
 
     @Override
-    public void read(CompoundTag tag) {
-        this.slot = tag.getInt(TAG_TRIDENT_SLOT);
+    public void read(CompoundTag compoundTag, HolderLookup.Provider registries) {
+        this.slot = compoundTag.getInt(TAG_TRIDENT_SLOT);
     }
 }

@@ -10,6 +10,6 @@ public interface ThrownTridentAccessor {
 
     @Accessor("ID_LOYALTY")
     static EntityDataAccessor<Byte> getLoyaltyId() {
-        throw new IllegalStateException();
+        throw new RuntimeException();
     }
 }

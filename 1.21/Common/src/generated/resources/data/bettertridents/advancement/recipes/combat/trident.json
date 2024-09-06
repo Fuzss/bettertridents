@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "bettertridents:trident_fragment"
-            ]
+            "items": "bettertridents:trident_fragment"
           }
         ]
       },
