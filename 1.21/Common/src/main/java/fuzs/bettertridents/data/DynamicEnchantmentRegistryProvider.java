@@ -1,5 +1,8 @@
 package fuzs.bettertridents.data;
 
+import fuzs.bettertridents.BetterTridents;
+import fuzs.bettertridents.config.CommonConfig;
+import fuzs.puzzleslib.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.api.data.v2.AbstractRegistriesDatapackGenerator;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
 import net.minecraft.advancements.critereon.*;
@@ -31,6 +34,8 @@ public class DynamicEnchantmentRegistryProvider extends AbstractRegistriesDatapa
 
     @Override
     protected void addBootstrap(BootstrapContext<Enchantment> context) {
+        // need this here to work across world restarts on Fabric
+        if (ModLoaderEnvironment.INSTANCE.getModLoader().isFabricLike() && !BetterTridents.CONFIG.get(CommonConfig.class).boostImpaling) return;
         HolderGetter<Item> items = context.lookup(Registries.ITEM);
         HolderGetter<Fluid> fluids = context.lookup(Registries.FLUID);
         HolderGetter<Enchantment> enchantments = context.lookup(Registries.ENCHANTMENT);
