@@ -1,6 +1,8 @@
 package fuzs.bettertridents.init;
 
+import com.mojang.serialization.MapCodec;
 import fuzs.bettertridents.BetterTridents;
+import fuzs.bettertridents.advancements.critereon.WetEntityPredicate;
 import fuzs.bettertridents.capability.LastDamageSourceCapability;
 import fuzs.bettertridents.capability.TridentSlotCapability;
 import fuzs.bettertridents.world.entity.item.LoyalExperienceOrb;
@@ -9,6 +11,7 @@ import fuzs.puzzleslib.api.capability.v3.CapabilityController;
 import fuzs.puzzleslib.api.capability.v3.data.EntityCapabilityKey;
 import fuzs.puzzleslib.api.init.v3.registry.RegistryManager;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -27,6 +30,11 @@ public class ModRegistry {
             "loyal_experience_orb", () -> EntityType.Builder.<LoyalExperienceOrb>of(LoyalExperienceOrb::new,
                     MobCategory.MISC
             ).sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(20));
+    public static final Holder.Reference<MapCodec<WetEntityPredicate>> IS_WET_ENTITY_SUB_PREDICATE_TYPE = REGISTRIES.register(
+            Registries.ENTITY_SUB_PREDICATE_TYPE,
+            "is_wet",
+            () -> WetEntityPredicate.CODEC
+    );
 
     static final CapabilityController CAPABILITIES = CapabilityController.from(BetterTridents.MOD_ID);
     public static final EntityCapabilityKey<ThrownTrident, TridentSlotCapability> TRIDENT_SLOT_CAPABILITY = CAPABILITIES.registerEntityCapability(

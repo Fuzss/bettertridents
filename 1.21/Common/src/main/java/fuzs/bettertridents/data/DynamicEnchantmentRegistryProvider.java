@@ -1,17 +1,18 @@
 package fuzs.bettertridents.data;
 
 import fuzs.bettertridents.BetterTridents;
+import fuzs.bettertridents.advancements.critereon.WetEntityPredicate;
 import fuzs.bettertridents.config.CommonConfig;
 import fuzs.puzzleslib.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.api.data.v2.AbstractRegistriesDatapackGenerator;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.EntityTypePredicate;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.tags.EntityTypeTags;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.Item;
@@ -19,12 +20,10 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.item.enchantment.effects.AddValue;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
-import net.minecraft.world.level.storage.loot.predicates.WeatherCheck;
 
 public class DynamicEnchantmentRegistryProvider extends AbstractRegistriesDatapackGenerator.Enchantments {
 
@@ -35,7 +34,10 @@ public class DynamicEnchantmentRegistryProvider extends AbstractRegistriesDatapa
     @Override
     protected void addBootstrap(BootstrapContext<Enchantment> context) {
         // need this here to work across world restarts on Fabric
-        if (ModLoaderEnvironment.INSTANCE.getModLoader().isFabricLike() && !BetterTridents.CONFIG.get(CommonConfig.class).boostImpaling) return;
+        if (ModLoaderEnvironment.INSTANCE.getModLoader().isFabricLike() && !BetterTridents.CONFIG.get(
+                CommonConfig.class).boostImpaling) {
+            return;
+        }
         HolderGetter<Item> items = context.lookup(Registries.ITEM);
         HolderGetter<Fluid> fluids = context.lookup(Registries.FLUID);
         HolderGetter<Enchantment> enchantments = context.lookup(Registries.ENCHANTMENT);
@@ -51,19 +53,9 @@ public class DynamicEnchantmentRegistryProvider extends AbstractRegistriesDatapa
                                                 .entityType(
                                                         EntityTypePredicate.of(EntityTypeTags.SENSITIVE_TO_IMPALING))
                                                 .build()
-                                ), WeatherCheck.weather().setRaining(true),
-                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
-                                        EntityPredicate.Builder.entity()
-                                                .located(LocationPredicate.Builder.location()
-                                                        .setBlock(BlockPredicate.Builder.block()
-                                                                .of(Blocks.BUBBLE_COLUMN)))
                                 ), LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
-                                        EntityPredicate.Builder.entity()
-                                                .located(LocationPredicate.Builder.location()
-                                                        .setFluid(FluidPredicate.Builder.fluid()
-                                                                .of(fluids.getOrThrow(FluidTags.WATER))))
-                                )
-                        )
+                                        EntityPredicate.Builder.entity().subPredicate(WetEntityPredicate.INSTANCE)
+                                ))
                 ));
     }
 }
