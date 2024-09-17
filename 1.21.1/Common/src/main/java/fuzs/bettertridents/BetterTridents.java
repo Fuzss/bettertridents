@@ -8,7 +8,6 @@ import fuzs.bettertridents.handler.LoyalDropsHandler;
 import fuzs.bettertridents.init.ModRegistry;
 import fuzs.puzzleslib.api.config.v3.ConfigHolder;
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
-import fuzs.puzzleslib.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.api.core.v1.context.BuildCreativeModeTabContentsContext;
 import fuzs.puzzleslib.api.core.v1.context.PackRepositorySourcesContext;
 import fuzs.puzzleslib.api.core.v1.utility.ResourceLocationHelper;
@@ -70,8 +69,7 @@ public class BetterTridents implements ModConstructor {
 
     @Override
     public void onAddDataPackFinders(PackRepositorySourcesContext context) {
-        // need this here so the game does not complain about experimental settings when the config option is disabled
-        if (ModLoaderEnvironment.INSTANCE.getModLoader().isForgeLike() && !CONFIG.get(CommonConfig.class).boostImpaling) return;
+        if (!CONFIG.get(CommonConfig.class).boostImpaling) return;
         context.addRepositorySource(PackResourcesHelper.buildServerPack(id("boosted_impaling"),
                 DynamicPackResources.create(DynamicEnchantmentRegistryProvider::new), true
         ));
