@@ -8,4 +8,6 @@ public class CommonConfig implements ConfigCore {
     public boolean tridentFragmentDrop = true;
     @Config(description = "Makes the impaling enchantment apply to any creature in contact with rain or water.", gameRestart = true)
     public boolean boostImpaling = true;
+    @Config(description = "Tridents can be repaired in an anvil using prismarine shards.")
+    public boolean repairTridents = true;
 }

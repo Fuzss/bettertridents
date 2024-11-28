@@ -48,7 +48,7 @@ public class LoyalDropsHandler {
 
     public static EventResult onLivingExperienceDrop(LivingEntity entity, @Nullable Player attackingPlayer, DefaultedInt droppedExperience) {
         if (!BetterTridents.CONFIG.get(ServerConfig.class).loyaltyCapturesDrops) return EventResult.PASS;
-        DamageSource damageSource = ModRegistry.LAST_DAMAGE_SOURCE_CAPABILITY.get(entity).getDamageSource();
+        DamageSource damageSource = ModRegistry.LAST_DAMAGE_SOURCE_ATTACHMENT_TYPE.get(entity);
         if (damageSource != null && damageSource.getEntity() instanceof Player player && !entity.level().isClientSide) {
             int loyaltyLevel = getLoyaltyLevel(damageSource);
             if (loyaltyLevel > 0) {

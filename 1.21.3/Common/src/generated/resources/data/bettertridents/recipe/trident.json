@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": {
-      "item": "bettertridents:trident_fragment"
-    },
-    "P": {
-      "item": "minecraft:prismarine_shard"
-    }
+    "#": "bettertridents:trident_fragment",
+    "P": "minecraft:prismarine_shard"
   },
   "pattern": [
     " ##",

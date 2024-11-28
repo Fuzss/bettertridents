@@ -1,8 +1,8 @@
 package fuzs.bettertridents.mixin;
 
 import fuzs.bettertridents.BetterTridents;
+import fuzs.bettertridents.handler.TridentAttachmentHandler;
 import fuzs.bettertridents.config.ServerConfig;
-import fuzs.bettertridents.init.ModRegistry;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -52,12 +52,17 @@ abstract class ThrownTridentMixin extends AbstractArrow {
         if (!BetterTridents.CONFIG.get(ServerConfig.class).returnTridentToSlot) return;
         boolean addedToInventory;
         if (this.pickup == Pickup.ALLOWED) {
-            addedToInventory = ModRegistry.TRIDENT_SLOT_CAPABILITY.get(ThrownTrident.class.cast(this)).addItemToInventory(player, this.getPickupItem());
+            addedToInventory = TridentAttachmentHandler.addItemToInventory(ThrownTrident.class.cast(this),
+                    player,
+                    this.getPickupItem());
         } else {
             addedToInventory = super.tryPickup(player);
         }
         if (!addedToInventory) {
-            addedToInventory = this.isNoPhysics() && this.ownedBy(player) && ModRegistry.TRIDENT_SLOT_CAPABILITY.get(ThrownTrident.class.cast(this)).addItemToInventory(player, this.getPickupItem());
+            addedToInventory = this.isNoPhysics() && this.ownedBy(player) && TridentAttachmentHandler.addItemToInventory(
+                    ThrownTrident.class.cast(this),
+                    player,
+                    this.getPickupItem());
         }
         callback.setReturnValue(addedToInventory);
     }
