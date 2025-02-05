@@ -1,7 +1,7 @@
 package fuzs.bettertridents.data;
 
 import fuzs.bettertridents.advancements.critereon.WetEntityPredicate;
-import fuzs.puzzleslib.api.data.v2.AbstractRegistriesDatapackGenerator;
+import fuzs.puzzleslib.api.data.v2.AbstractDatapackRegistriesProvider;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.EntityTypePredicate;
@@ -22,14 +22,18 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 
-public class DynamicEnchantmentRegistryProvider extends AbstractRegistriesDatapackGenerator<Enchantment> {
+public class DynamicDatapackRegistriesProvider extends AbstractDatapackRegistriesProvider {
 
-    public DynamicEnchantmentRegistryProvider(DataProviderContext context) {
-        super(Registries.ENCHANTMENT, context);
+    public DynamicDatapackRegistriesProvider(DataProviderContext context) {
+        super(context);
     }
 
     @Override
-    public void addBootstrap(BootstrapContext<Enchantment> context) {
+    public void addBootstrap(RegistryBoostrapConsumer consumer) {
+        consumer.add(Registries.ENCHANTMENT, DynamicDatapackRegistriesProvider::bootstrapEnchantments);
+    }
+
+    static void bootstrapEnchantments(BootstrapContext<Enchantment> context) {
         HolderGetter<Item> items = context.lookup(Registries.ITEM);
         HolderGetter<EntityType<?>> entityTypes = context.lookup(Registries.ENTITY_TYPE);
         HolderGetter<Enchantment> enchantments = context.lookup(Registries.ENCHANTMENT);
