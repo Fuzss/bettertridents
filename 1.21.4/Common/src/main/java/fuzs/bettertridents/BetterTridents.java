@@ -5,6 +5,7 @@ import fuzs.bettertridents.config.ServerConfig;
 import fuzs.bettertridents.data.DynamicDatapackRegistriesProvider;
 import fuzs.bettertridents.handler.LoyalDropsHandler;
 import fuzs.bettertridents.handler.TridentAttachmentHandler;
+import fuzs.bettertridents.init.ModLootTables;
 import fuzs.bettertridents.init.ModRegistry;
 import fuzs.puzzleslib.api.config.v3.ConfigHolder;
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
@@ -18,23 +19,16 @@ import fuzs.puzzleslib.api.event.v1.entity.living.LivingExperienceDropCallback;
 import fuzs.puzzleslib.api.event.v1.server.LootTableLoadCallback;
 import fuzs.puzzleslib.api.resources.v1.DynamicPackResources;
 import fuzs.puzzleslib.api.resources.v1.PackResourcesHelper;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Repairable;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,17 +53,7 @@ public class BetterTridents implements ModConstructor {
     private static void registerEventHandlers() {
         LivingDropsCallback.EVENT.register(LoyalDropsHandler::onLivingDrops);
         LivingExperienceDropCallback.EVENT.register(LoyalDropsHandler::onLivingExperienceDrop);
-        LootTableLoadCallback.EVENT.register((ResourceLocation resourceLocation, LootTable.Builder builder, HolderLookup.Provider provider) -> {
-            if (!BetterTridents.CONFIG.get(CommonConfig.class).tridentFragmentDrop) return;
-            if (EntityType.ELDER_GUARDIAN.getDefaultLootTable()
-                    .map(ResourceKey::location)
-                    .filter(resourceLocation::equals)
-                    .isPresent()) {
-                builder.withPool(LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(1.0F))
-                        .add(LootItem.lootTableItem(ModRegistry.TRIDENT_FRAGMENT_ITEM.value())));
-            }
-        });
+        LootTableLoadCallback.EVENT.register(ModLootTables::onLootTableLoad);
         LivingDeathCallback.EVENT.register(TridentAttachmentHandler::onLivingDeath);
         LivingDropsCallback.EVENT.register(TridentAttachmentHandler::onLivingDrops);
         FinalizeItemComponentsCallback.EVENT.register((Item item, Consumer<Function<DataComponentMap, DataComponentPatch>> consumer) -> {

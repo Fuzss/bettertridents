@@ -44,6 +44,6 @@ public class ModRegistry {
             .build(BetterTridents.id("last_damage_source"));
 
     public static void bootstrap() {
-        // NO-OP
+        ModLootTables.bootstrap();
     }
 }
