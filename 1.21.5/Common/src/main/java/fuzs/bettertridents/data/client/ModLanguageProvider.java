@@ -13,5 +13,7 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
     @Override
     public void addTranslations(TranslationBuilder builder) {
         builder.add(ModRegistry.TRIDENT_FRAGMENT_ITEM.value(), "Trident Fragment");
+        builder.add(ModRegistry.LOYAL_ITEM_ENTITY_TYPE.value(), "Loyal Item");
+        builder.add(ModRegistry.LOYAL_EXPERIENCE_ORB_ENTITY_TYPE.value(), "Loyal Experience Orb");
     }
 }

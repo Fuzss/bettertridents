@@ -22,6 +22,6 @@ public final class WetEntityPredicate implements EntitySubPredicate {
 
     @Override
     public boolean matches(Entity entity, ServerLevel level, @Nullable Vec3 position) {
-        return entity.isInWaterRainOrBubble();
+        return entity.isInWaterOrRain();
     }
 }

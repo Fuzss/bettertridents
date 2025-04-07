@@ -47,9 +47,9 @@ public class TridentAttachmentHandler {
     private static int findSlotAtIndex(Inventory inventory, int slot) {
         if (slot != -1 && inventory.getItem(slot).isEmpty()) {
             return slot;
-        } else if (inventory.getSelected().isEmpty()) {
+        } else if (inventory.getSelectedItem().isEmpty()) {
             // try to return to main hand as secondary option
-            return inventory.selected;
+            return inventory.getSelectedSlot();
         } else {
             return -1;
         }

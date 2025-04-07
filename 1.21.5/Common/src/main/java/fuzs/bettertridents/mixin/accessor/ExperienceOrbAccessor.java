@@ -8,9 +8,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ExperienceOrbAccessor {
 
     @Accessor
-    void setValue(int value);
-
-    @Accessor
     void setAge(int age);
 
     @Accessor

@@ -11,8 +11,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -21,12 +20,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class LoyalExperienceOrb extends ExperienceOrb {
-    private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER = SynchedEntityData.defineId(LoyalExperienceOrb.class,
-            EntityDataSerializers.OPTIONAL_UUID
-    );
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DATA_OWNER = SynchedEntityData.defineId(
+            LoyalExperienceOrb.class,
+            EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Byte> DATA_LOYALTY = SynchedEntityData.defineId(LoyalExperienceOrb.class,
-            EntityDataSerializers.BYTE
-    );
+            EntityDataSerializers.BYTE);
 
     public LoyalExperienceOrb(Level level, double x, double y, double z, int value, @Nullable UUID owner, int loyaltyLevel) {
         super(ModRegistry.LOYAL_EXPERIENCE_ORB_ENTITY_TYPE.value(), level);
@@ -34,10 +32,9 @@ public class LoyalExperienceOrb extends ExperienceOrb {
         this.setYRot((float) (this.random.nextDouble() * 360.0D));
         this.setDeltaMovement((this.random.nextDouble() * (double) 0.2F - (double) 0.1F) * 2.0D,
                 this.random.nextDouble() * 0.2D * 2.0D,
-                (this.random.nextDouble() * (double) 0.2F - (double) 0.1F) * 2.0D
-        );
-        ((ExperienceOrbAccessor) this).setValue(value);
-        this.getEntityData().set(DATA_OWNER, Optional.ofNullable(owner));
+                (this.random.nextDouble() * (double) 0.2F - (double) 0.1F) * 2.0D);
+        this.getEntityData().set(DATA_VALUE, value);
+        this.getEntityData().set(DATA_OWNER, Optional.ofNullable(owner).map(EntityReference::new));
         this.getEntityData().set(DATA_LOYALTY, (byte) loyaltyLevel);
     }
 
@@ -54,12 +51,13 @@ public class LoyalExperienceOrb extends ExperienceOrb {
 
     @Override
     public void tick() {
-        Player player;
-        if (this.getOwner() != null) {
-            player = LoyalDropsHandler.isAcceptableReturnOwner(this.level(), this.level().getPlayerByUUID(this.getOwner()));
-        } else {
-            player = null;
-        }
+        Player player = this.getOwnerReference()
+                .map((EntityReference<LivingEntity> entityReference) -> entityReference.getEntity(this.level(),
+                        LivingEntity.class))
+                .filter(livingEntity -> EntitySelector.NO_SPECTATORS.test(livingEntity) &&
+                        livingEntity instanceof Player)
+                .map(Player.class::cast)
+                .orElse(null);
         if (player != null) {
             LoyalDropsHandler.tickLoyalEntity(this, player, this.getEntityData().get(DATA_LOYALTY));
 
@@ -73,25 +71,23 @@ public class LoyalExperienceOrb extends ExperienceOrb {
         }
     }
 
-    @Nullable
-    public UUID getOwner() {
-        return this.getEntityData().get(DATA_OWNER).orElse(null);
+    private Optional<EntityReference<LivingEntity>> getOwnerReference() {
+        return this.getEntityData().get(DATA_OWNER);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        if (this.getOwner() != null) {
-            compound.putUUID("Owner", this.getOwner());
-        }
+        this.getOwnerReference().ifPresent((EntityReference<LivingEntity> entityReference) -> {
+            entityReference.store(compound, "Owner");
+        });
+
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("Owner")) {
-            this.getEntityData().set(DATA_OWNER, Optional.of(compound.getUUID("Owner")));
-        }
+        this.getEntityData().set(DATA_OWNER, Optional.ofNullable(EntityReference.read(compound, "Owner")));
     }
 
     @Override

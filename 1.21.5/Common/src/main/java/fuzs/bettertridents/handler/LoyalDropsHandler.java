@@ -22,7 +22,6 @@ import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,10 +37,8 @@ public class LoyalDropsHandler {
                 itemEntity = new LoyalItemEntity(itemEntity, damageSource.getEntity(), loyaltyLevel);
                 entity.level().addFreshEntity(itemEntity);
             }
-
             return EventResult.INTERRUPT;
         } else {
-
             return EventResult.PASS;
         }
     }
@@ -52,7 +49,11 @@ public class LoyalDropsHandler {
         if (damageSource != null && damageSource.getEntity() instanceof Player player && !entity.level().isClientSide) {
             int loyaltyLevel = getLoyaltyLevel(damageSource);
             if (loyaltyLevel > 0) {
-                awardExperienceOrbs((ServerLevel) entity.level(), entity.position(), droppedExperience.getAsInt(), player, loyaltyLevel);
+                awardExperienceOrbs((ServerLevel) entity.level(),
+                        entity.position(),
+                        droppedExperience.getAsInt(),
+                        player,
+                        loyaltyLevel);
                 return EventResult.INTERRUPT;
             }
         }
@@ -76,7 +77,13 @@ public class LoyalDropsHandler {
         while (amount > 0) {
             int i = ExperienceOrb.getExperienceValue(amount);
             amount -= i;
-            level.addFreshEntity(new LoyalExperienceOrb(level, pos.x(), pos.y(), pos.z(), i, player.getUUID(), loyaltyLevel));
+            level.addFreshEntity(new LoyalExperienceOrb(level,
+                    pos.x(),
+                    pos.y(),
+                    pos.z(),
+                    i,
+                    player.getUUID(),
+                    loyaltyLevel));
         }
     }
 
@@ -97,7 +104,8 @@ public class LoyalDropsHandler {
 
         entity.baseTick();
 
-        if (!entity.onGround() || entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-5F || (entity.tickCount + entity.getId()) % 4 == 0) {
+        if (!entity.onGround() || entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-5F ||
+                (entity.tickCount + entity.getId()) % 4 == 0) {
             entity.move(MoverType.SELF, entity.getDeltaMovement());
         }
 
@@ -106,10 +114,5 @@ public class LoyalDropsHandler {
                 entity.hasImpulse = true;
             }
         }
-    }
-
-    @Nullable
-    public static Player isAcceptableReturnOwner(Level level, @Nullable Entity owner) {
-        return owner instanceof Player player && player.isAlive() && !player.isSpectator() ? player : null;
     }
 }
