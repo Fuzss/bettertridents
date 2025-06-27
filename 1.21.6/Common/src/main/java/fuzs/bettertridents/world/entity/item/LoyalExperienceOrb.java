@@ -3,7 +3,6 @@ package fuzs.bettertridents.world.entity.item;
 import fuzs.bettertridents.handler.LoyalDropsHandler;
 import fuzs.bettertridents.init.ModRegistry;
 import fuzs.bettertridents.mixin.accessor.ExperienceOrbAccessor;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -14,6 +13,8 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -54,8 +55,8 @@ public class LoyalExperienceOrb extends ExperienceOrb {
         Player player = this.getOwnerReference()
                 .map((EntityReference<LivingEntity> entityReference) -> entityReference.getEntity(this.level(),
                         LivingEntity.class))
-                .filter(livingEntity -> EntitySelector.NO_SPECTATORS.test(livingEntity) &&
-                        livingEntity instanceof Player)
+                .filter(livingEntity -> EntitySelector.NO_SPECTATORS.test(livingEntity)
+                        && livingEntity instanceof Player)
                 .map(Player.class::cast)
                 .orElse(null);
         if (player != null) {
@@ -76,7 +77,7 @@ public class LoyalExperienceOrb extends ExperienceOrb {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         this.getOwnerReference().ifPresent((EntityReference<LivingEntity> entityReference) -> {
             entityReference.store(compound, "Owner");
@@ -85,7 +86,7 @@ public class LoyalExperienceOrb extends ExperienceOrb {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
+    protected void readAdditionalSaveData(ValueInput compound) {
         super.readAdditionalSaveData(compound);
         this.getEntityData().set(DATA_OWNER, Optional.ofNullable(EntityReference.read(compound, "Owner")));
     }

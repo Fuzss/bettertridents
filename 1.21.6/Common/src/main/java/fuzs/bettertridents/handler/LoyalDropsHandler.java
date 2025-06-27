@@ -7,8 +7,8 @@ import fuzs.bettertridents.mixin.accessor.ThrownTridentAccessor;
 import fuzs.bettertridents.world.entity.item.LoyalExperienceOrb;
 import fuzs.bettertridents.world.entity.item.LoyalItemEntity;
 import fuzs.puzzleslib.api.event.v1.core.EventResult;
-import fuzs.puzzleslib.api.event.v1.data.DefaultedInt;
-import fuzs.puzzleslib.api.init.v3.registry.LookupHelper;
+import fuzs.puzzleslib.api.event.v1.data.MutableInt;
+import fuzs.puzzleslib.api.item.v2.EnchantingHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -43,7 +43,7 @@ public class LoyalDropsHandler {
         }
     }
 
-    public static EventResult onLivingExperienceDrop(LivingEntity entity, @Nullable Player attackingPlayer, DefaultedInt droppedExperience) {
+    public static EventResult onLivingExperienceDrop(LivingEntity entity, @Nullable Player attackingPlayer, MutableInt droppedExperience) {
         if (!BetterTridents.CONFIG.get(ServerConfig.class).loyaltyCapturesDrops) return EventResult.PASS;
         DamageSource damageSource = ModRegistry.LAST_DAMAGE_SOURCE_ATTACHMENT_TYPE.get(entity);
         if (damageSource != null && damageSource.getEntity() instanceof Player player && !entity.level().isClientSide) {
@@ -65,7 +65,7 @@ public class LoyalDropsHandler {
             if (source.getDirectEntity() instanceof ThrownTrident trident) {
                 return trident.getEntityData().get(ThrownTridentAccessor.getLoyaltyId());
             } else {
-                Holder<Enchantment> enchantment = LookupHelper.lookupEnchantment(player, Enchantments.LOYALTY);
+                Holder<Enchantment> enchantment = EnchantingHelper.lookup(player, Enchantments.LOYALTY);
                 return EnchantmentHelper.getEnchantmentLevel(enchantment, player);
             }
         } else {
@@ -104,8 +104,8 @@ public class LoyalDropsHandler {
 
         entity.baseTick();
 
-        if (!entity.onGround() || entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-5F ||
-                (entity.tickCount + entity.getId()) % 4 == 0) {
+        if (!entity.onGround() || entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-5F
+                || (entity.tickCount + entity.getId()) % 4 == 0) {
             entity.move(MoverType.SELF, entity.getDeltaMovement());
         }
 
