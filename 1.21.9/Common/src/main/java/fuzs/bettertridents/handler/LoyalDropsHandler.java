@@ -3,7 +3,6 @@ package fuzs.bettertridents.handler;
 import fuzs.bettertridents.BetterTridents;
 import fuzs.bettertridents.config.ServerConfig;
 import fuzs.bettertridents.init.ModRegistry;
-import fuzs.bettertridents.mixin.accessor.ThrownTridentAccessor;
 import fuzs.bettertridents.world.entity.item.LoyalExperienceOrb;
 import fuzs.bettertridents.world.entity.item.LoyalItemEntity;
 import fuzs.puzzleslib.api.event.v1.core.EventResult;
@@ -46,7 +45,8 @@ public class LoyalDropsHandler {
     public static EventResult onLivingExperienceDrop(LivingEntity entity, @Nullable Player attackingPlayer, MutableInt droppedExperience) {
         if (!BetterTridents.CONFIG.get(ServerConfig.class).loyaltyCapturesDrops) return EventResult.PASS;
         DamageSource damageSource = ModRegistry.LAST_DAMAGE_SOURCE_ATTACHMENT_TYPE.get(entity);
-        if (damageSource != null && damageSource.getEntity() instanceof Player player && !entity.level().isClientSide) {
+        if (damageSource != null && damageSource.getEntity() instanceof Player player && !entity.level()
+                .isClientSide()) {
             int loyaltyLevel = getLoyaltyLevel(damageSource);
             if (loyaltyLevel > 0) {
                 awardExperienceOrbs((ServerLevel) entity.level(),
@@ -63,7 +63,7 @@ public class LoyalDropsHandler {
     private static int getLoyaltyLevel(DamageSource source) {
         if (source.getEntity() instanceof Player player) {
             if (source.getDirectEntity() instanceof ThrownTrident trident) {
-                return trident.getEntityData().get(ThrownTridentAccessor.getLoyaltyId());
+                return trident.getEntityData().get(ThrownTrident.ID_LOYALTY);
             } else {
                 Holder<Enchantment> enchantment = EnchantingHelper.lookup(player, Enchantments.LOYALTY);
                 return EnchantmentHelper.getEnchantmentLevel(enchantment, player);
@@ -97,7 +97,7 @@ public class LoyalDropsHandler {
         entity.noPhysics = true;
         Vec3 vec3 = owner.getEyePosition().subtract(entity.position());
         entity.setPosRaw(entity.getX(), entity.getY() + vec3.y * 0.015 * loyaltyLevel, entity.getZ());
-        if (entity.level().isClientSide) {
+        if (entity.level().isClientSide()) {
             entity.yOld = entity.getY();
         }
         entity.setDeltaMovement(entity.getDeltaMovement().scale(0.95).add(vec3.normalize().scale(0.05 * loyaltyLevel)));
@@ -109,7 +109,7 @@ public class LoyalDropsHandler {
             entity.move(MoverType.SELF, entity.getDeltaMovement());
         }
 
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
             if (entity.getDeltaMovement().subtract(vec3).lengthSqr() > 0.01) {
                 entity.hasImpulse = true;
             }

@@ -26,7 +26,6 @@ public class TridentAttachmentHandler {
 
     public static boolean addItemToInventory(ThrownTrident thrownTrident, Player player, ItemStack itemStack) {
         int tridentSlot = ModRegistry.TRIDENT_SLOT_ATTACHMENT_TYPE.getOrDefault(thrownTrident, -1);
-        verifyEquippedItem(itemStack);
         Inventory inventory = player.getInventory();
         int slot = findSlotAtIndex(inventory, tridentSlot);
         if (slot != -1) {
@@ -39,16 +38,11 @@ public class TridentAttachmentHandler {
         }
     }
 
-    private static void verifyEquippedItem(ItemStack itemStack) {
-        // copied from LivingEntity::verifyEquippedItem as the method is protected
-        itemStack.getItem().verifyComponentsAfterLoad(itemStack);
-    }
-
     private static int findSlotAtIndex(Inventory inventory, int slot) {
         if (slot != -1 && inventory.getItem(slot).isEmpty()) {
             return slot;
         } else if (inventory.getSelectedItem().isEmpty()) {
-            // try to return to main hand as secondary option
+            // try to return to the main hand as a secondary option
             return inventory.getSelectedSlot();
         } else {
             return -1;

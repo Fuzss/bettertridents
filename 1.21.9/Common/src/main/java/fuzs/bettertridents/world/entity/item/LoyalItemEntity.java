@@ -2,7 +2,6 @@ package fuzs.bettertridents.world.entity.item;
 
 import fuzs.bettertridents.handler.LoyalDropsHandler;
 import fuzs.bettertridents.init.ModRegistry;
-import fuzs.bettertridents.mixin.accessor.ItemEntityAccessor;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -25,8 +24,8 @@ public class LoyalItemEntity extends ItemEntity {
         super(ModRegistry.LOYAL_ITEM_ENTITY_TYPE.value(), itemEntity.level());
         this.setItem(itemEntity.getItem().copy());
         this.copyPosition(itemEntity);
-        ((ItemEntityAccessor) this).setAge(itemEntity.getAge());
-        ((ItemEntityAccessor) this).setBobOffs(itemEntity.bobOffs);
+        this.age = itemEntity.getAge();
+        this.bobOffs = itemEntity.bobOffs;
         this.setThrower(thrower);
         if (loyaltyLevel < 1) {
             throw new IllegalStateException("Loyalty level missing from loyal item entity, was %s".formatted(
@@ -49,12 +48,12 @@ public class LoyalItemEntity extends ItemEntity {
                 LoyalDropsHandler.tickLoyalEntity(this, player, this.getEntityData().get(DATA_LOYALTY));
                 // allow this to age, just in case something is wrong, so we don't stay in the world forever
                 if (this.getAge() != -32768) {
-                    ((ItemEntityAccessor) this).setAge(this.getAge() + 1);
+                    this.age++;
                 }
-                if (!this.level().isClientSide && this.getAge() >= 6000) {
+                if (!this.level().isClientSide() && this.getAge() >= 6000) {
                     this.discard();
                 }
-            } else if (!this.level().isClientSide) {
+            } else if (!this.level().isClientSide()) {
                 super.tick();
             }
         } else {

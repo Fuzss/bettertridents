@@ -57,8 +57,8 @@ public class BetterTridents implements ModConstructor {
         LivingDeathCallback.EVENT.register(TridentAttachmentHandler::onLivingDeath);
         LivingDropsCallback.EVENT.register(TridentAttachmentHandler::onLivingDrops);
         FinalizeItemComponentsCallback.EVENT.register((Item item, Consumer<Function<DataComponentMap, DataComponentPatch>> consumer) -> {
-            if (!BetterTridents.CONFIG.getHolder(CommonConfig.class).isAvailable() ||
-                    !BetterTridents.CONFIG.get(CommonConfig.class).repairTridents) {
+            if (!BetterTridents.CONFIG.getHolder(CommonConfig.class).isAvailable() || !BetterTridents.CONFIG.get(
+                    CommonConfig.class).repairTridents) {
                 return;
             }
             if (item == Items.TRIDENT) {
@@ -78,8 +78,11 @@ public class BetterTridents implements ModConstructor {
 
     @Override
     public void onAddDataPackFinders(PackRepositorySourcesContext context) {
-        if (!CONFIG.get(CommonConfig.class).boostImpaling) return;
-        context.addRepositorySource(PackResourcesHelper.buildServerPack(id("boosted_impaling"),
+        if (!CONFIG.get(CommonConfig.class).boostImpaling) {
+            return;
+        }
+
+        context.registerRepositorySource(PackResourcesHelper.buildServerPack(id("boosted_impaling"),
                 DynamicPackResources.create(DynamicDatapackRegistriesProvider::new),
                 true));
     }

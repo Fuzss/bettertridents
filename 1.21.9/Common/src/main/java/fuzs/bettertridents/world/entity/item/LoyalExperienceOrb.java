@@ -2,7 +2,6 @@ package fuzs.bettertridents.world.entity.item;
 
 import fuzs.bettertridents.handler.LoyalDropsHandler;
 import fuzs.bettertridents.init.ModRegistry;
-import fuzs.bettertridents.mixin.accessor.ExperienceOrbAccessor;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -35,7 +34,7 @@ public class LoyalExperienceOrb extends ExperienceOrb {
                 this.random.nextDouble() * 0.2D * 2.0D,
                 (this.random.nextDouble() * (double) 0.2F - (double) 0.1F) * 2.0D);
         this.getEntityData().set(DATA_VALUE, value);
-        this.getEntityData().set(DATA_OWNER, Optional.ofNullable(owner).map(EntityReference::new));
+        this.getEntityData().set(DATA_OWNER, Optional.ofNullable(owner).map(EntityReference::of));
         this.getEntityData().set(DATA_LOYALTY, (byte) loyaltyLevel);
     }
 
@@ -61,13 +60,12 @@ public class LoyalExperienceOrb extends ExperienceOrb {
                 .orElse(null);
         if (player != null) {
             LoyalDropsHandler.tickLoyalEntity(this, player, this.getEntityData().get(DATA_LOYALTY));
-
             // allow this to age, just in case something is wrong, so we don't stay in the world forever
-            ((ExperienceOrbAccessor) this).setAge(((ExperienceOrbAccessor) this).getAge() + 1);
-            if (((ExperienceOrbAccessor) this).getAge() >= 6000) {
+            this.age++;
+            if (this.age >= 6000) {
                 this.discard();
             }
-        } else if (!this.level().isClientSide) {
+        } else if (!this.level().isClientSide()) {
             super.tick();
         }
     }

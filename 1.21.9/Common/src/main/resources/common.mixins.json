@@ -5,10 +5,7 @@
   "package": "${modGroup}.mixin",
   "mixins": [
     "ThrownTridentMixin",
-    "TridentItemMixin",
-    "accessor.ExperienceOrbAccessor",
-    "accessor.ItemEntityAccessor",
-    "accessor.ThrownTridentAccessor"
+    "TridentItemMixin"
   ],
   "client": [
   ],
