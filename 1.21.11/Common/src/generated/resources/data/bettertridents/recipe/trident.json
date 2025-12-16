@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "bettertridents:trident_fragment",
+    "P": "minecraft:prismarine_shard"
+  },
+  "pattern": [
+    " ##",
+    " P#",
+    "P  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:trident"
+  }
+}
