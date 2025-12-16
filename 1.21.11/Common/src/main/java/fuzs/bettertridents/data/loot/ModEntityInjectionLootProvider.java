@@ -1,4 +1,4 @@
-package fuzs.bettertridents.data;
+package fuzs.bettertridents.data.loot;
 
 import fuzs.bettertridents.init.ModLootTables;
 import fuzs.bettertridents.init.ModRegistry;

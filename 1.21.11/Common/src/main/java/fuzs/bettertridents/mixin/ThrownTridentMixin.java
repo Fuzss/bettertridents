@@ -1,13 +1,13 @@
 package fuzs.bettertridents.mixin;
 
 import fuzs.bettertridents.BetterTridents;
-import fuzs.bettertridents.handler.TridentAttachmentHandler;
 import fuzs.bettertridents.config.ServerConfig;
+import fuzs.bettertridents.handler.TridentAttachmentHandler;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,6 +32,7 @@ abstract class ThrownTridentMixin extends AbstractArrow {
             super.onBelowWorld();
             return;
         }
+
         if (this.entityData.get(ID_LOYALTY) > 0 && this.isAcceptibleReturnOwner()) {
             if (this.getOwner() instanceof Player player) {
                 this.setNoPhysics(true);
@@ -39,6 +40,7 @@ abstract class ThrownTridentMixin extends AbstractArrow {
                 return;
             }
         }
+
         super.onBelowWorld();
     }
 
@@ -49,7 +51,10 @@ abstract class ThrownTridentMixin extends AbstractArrow {
 
     @Inject(method = "tryPickup", at = @At("HEAD"), cancellable = true)
     protected void tryPickup(Player player, CallbackInfoReturnable<Boolean> callback) {
-        if (!BetterTridents.CONFIG.get(ServerConfig.class).returnTridentToSlot) return;
+        if (!BetterTridents.CONFIG.get(ServerConfig.class).returnTridentToSlot) {
+            return;
+        }
+
         boolean addedToInventory;
         if (this.pickup == Pickup.ALLOWED) {
             addedToInventory = TridentAttachmentHandler.addItemToInventory(ThrownTrident.class.cast(this),
@@ -58,12 +63,15 @@ abstract class ThrownTridentMixin extends AbstractArrow {
         } else {
             addedToInventory = super.tryPickup(player);
         }
+
         if (!addedToInventory) {
-            addedToInventory = this.isNoPhysics() && this.ownedBy(player) && TridentAttachmentHandler.addItemToInventory(
-                    ThrownTrident.class.cast(this),
-                    player,
-                    this.getPickupItem());
+            addedToInventory =
+                    this.isNoPhysics() && this.ownedBy(player) && TridentAttachmentHandler.addItemToInventory(
+                            ThrownTrident.class.cast(this),
+                            player,
+                            this.getPickupItem());
         }
+
         callback.setReturnValue(addedToInventory);
     }
 }

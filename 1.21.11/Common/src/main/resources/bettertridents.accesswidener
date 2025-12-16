@@ -1,5 +1,5 @@
 accessWidener   v2  named
-accessible  field   net/minecraft/world/entity/projectile/ThrownTrident ID_LOYALTY  Lnet/minecraft/network/syncher/EntityDataAccessor;
+accessible  field   net/minecraft/world/entity/projectile/arrow/ThrownTrident   ID_LOYALTY  Lnet/minecraft/network/syncher/EntityDataAccessor;
 accessible  field   net/minecraft/world/entity/ExperienceOrb    age I
 accessible  field   net/minecraft/world/entity/item/ItemEntity  age I
 accessible  field   net/minecraft/world/entity/item/ItemEntity  bobOffs F
